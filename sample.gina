@@ -1,0 +1,38 @@
+<gina version="0">
+    <project name="myproj" type="cplusplus" backend="gcc">
+        <files>
+            <folder name="src">
+                <file type="cpp">./main.cpp</file>
+            </folder>
+            <folder name="headers">
+                <file type="cpp">./main.h</file>
+            </folder>
+        </files>
+        <target name="release" inherit="" product="foo">
+            <options>
+                <option name="debug" value="true" />
+                <option name="optimization" value="3" description="High" />
+            </options>
+            <includepaths>
+                <path>/usr/include</path>
+                <path>/usr/local/include</path>
+            </includepaths>
+            <libraries>
+                <paths>
+                    <path>/usr/lib</path>
+                    <path>/usr/local/lib</path>
+                </paths>
+                <lib>mylib</lib>
+                <lib>myotherlib</lib>
+            </libraries>
+            <preprocessor>
+                <define name="PI" value="3.14" />
+                <define name="FOO" value="bar" />
+            </preprocessor>
+        </target>
+        <dependencies>
+            <dep name="sample2" order="0" />
+        </dependencies>
+        <subproject name="sample2" ref="file://./sample2.gina" />
+    </project>
+</gina>

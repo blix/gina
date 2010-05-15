@@ -1,0 +1,67 @@
+<gina-backend name="gcc" version="0">
+    <version value="*">
+        <buildtype name="default"> <!-- no name is for all types -->
+            <options>
+                <option name="debug" description="Debug Information">
+                    <value value="true" description="Include debug info">-g</value>
+                    <value value="false"></value>
+                </option>
+                <option name="optimization" description="Optimization">
+                    <value value="0" description="None">-O0</value>
+                    <value value="1" description="Low">-O1</value>
+                    <value value="2" description="Normal">-O2</value>
+                    <value value="3" description="High">-O3</value>
+                </option>
+            </options>
+        </buildtype>
+        <buildtype name="cplusplus" inherits="default">
+            <commands>
+                <command type="foreach">
+                    <item path="/project/files/folder/file">
+                        <filter extensions="cpp,cxx" />
+                        <tag name="basename" alter="s/\.[a-zA-Z0-9]*$//" /> <!-- create a new format tag with the name and contents based on current item -->
+                    </item>
+                    <collect name="intermediate">{basename}.o</collect>
+                    <value>g++ {}</value> <!-- empty {} is for node contents -->
+                    <flags>
+                        <flag type="simple">
+                            <value>-o {intermediate_location}{basename}.o</value>
+                        </flag>
+                        <flag type="foreach">
+                            <item path="options/option" /> <!-- no leading slash means its part of the target -->
+                            <value derive_from="backend" path="buildtype/options/option" />
+                        </flag>
+                        <flag type="foreach">
+                            <item path="includepaths/path" />
+                            <value>-I{}</value>
+                        </flag>
+                        <flag type="foreach">
+                            <item path="preprocessor/define" />
+                            <value>-D{name}={value}</value>
+                        </flag>
+                    </flags>
+                </command>
+                <command type="final">
+                    <value>g++</value>
+                    <flags>
+                        <flag type="simple">
+                            <value>-o {output_location}{product}</value>
+                        </flag>
+                        <flag type="foreach">
+                            <collection name="intermediate" />
+                            <value>{}</value>
+                        </flag>
+                        <flag type="foreach">
+                            <item path="libraries/paths/path" />
+                            <value>-L{}</value>
+                        </flag>
+                        <flag type="foreach">
+                            <item path="libraries/lib" />
+                            <value>-l{}</value>
+                        </flag>
+                    </flags>
+                </command>
+            </commands>
+        </buildtype>
+    </version>
+</gina-backend>
